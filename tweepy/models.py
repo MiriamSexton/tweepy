@@ -10,6 +10,9 @@ from tweepy.utils import parse_datetime, parse_html_value, parse_a_href, \
 class ResultSet(list):
     """A list like object that holds results from a Twitter API query."""
 
+class TweetResultSet(object):
+    ''' an obj '''
+
 
 class Model(object):
 
@@ -207,6 +210,45 @@ class SavedSearch(Model):
 
     def destroy(self):
         return self._api.destroy_saved_search(self.id)
+
+# TODO: Examine the API
+# ANd change to make Status (??)
+class TweetSearchResult(Model):
+
+    @classmethod
+    def parse(cls, api, json):
+        result = cls()
+
+        for k, v in json.items():
+            if k == 'created_at':
+                setattr(result, k, parse_search_datetime(v))
+            elif k == 'source':
+                setattr(result, k, parse_html_value(unescape_html(v)))
+            elif k == 'user':
+                setattr(result, k, User.parse(api, v))
+            else:
+                setattr(result, k, v)
+        return result
+
+    @classmethod
+    def parse_list(cls, api, json_list, result_set=None):
+        results = TweetResultSet()
+        results.max_id = json_list['search_metadata'].get('max_id')
+        results.since_id = json_list['search_metadata'].get('since_id')
+        results.refresh_url = json_list['search_metadata'].get('refresh_url')
+        results.next_page = json_list['search_metadata'].get('next_page')
+        results.results_per_page = json_list['search_metadata'].get('results_per_page')
+        results.page = json_list['search_metadata'].get('page')
+        results.completed_in = json_list['search_metadata'].get('completed_in')
+        results.query = json_list['search_metadata'].get('query')
+
+        results.statuses = list()
+
+        for obj in json_list['statuses']:
+            results.statuses.append(Status.parse(api, obj))
+
+        return results
+
 
 
 class SearchResult(Model):
@@ -415,6 +457,7 @@ class ModelFactory(object):
     friendship = Friendship
     saved_search = SavedSearch
     search_result = SearchResult
+    tweet_search_result = TweetSearchResult
     category = Category
     list = List
     relation = Relation

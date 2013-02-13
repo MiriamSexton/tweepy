@@ -300,6 +300,10 @@ class TweepyAPITests(unittest.TestCase):
     def testsearch(self):
         self.api.search('tweepy')
 
+    def testtweetsearch(self):
+        self.api.tweet_search(q='from:twitter', count=3)
+
+
     def testgeoapis(self):
         def place_name_in_list(place_name, place_list):
             """Return True if a given place_name is in place_list."""

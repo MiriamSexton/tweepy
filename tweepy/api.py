@@ -627,6 +627,14 @@ class API(object):
     )
     search.pagination_mode = 'page'
 
+    """ search tweets"""
+    tweet_search = bind_api(
+        path = '/search/tweets.json',
+        payload_type = 'tweet_search_result', payload_list = True,
+        allowed_param = ['q', 'lang', 'locale', 'rpp', 'page', 'since_id', 'geocode', 'show_user', 'max_id', 'since', 'until', 'result_type', 'count']
+    )
+    search.pagination_mode = 'page'
+
     """ trends/daily """
     trends_daily = bind_api(
         path = '/trends/daily.json',
