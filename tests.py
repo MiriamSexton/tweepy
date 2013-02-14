@@ -4,17 +4,20 @@ from time import sleep
 import os
 
 from nose import SkipTest
+import local_settings
 
 from tweepy import (API, OAuthHandler, Friendship, Cursor,
                     MemoryCache, FileCache)
 
+
 """Configurations"""
 # Must supply twitter account credentials for tests
-username = os.environ.get('TWITTER_USERNAME', '')
-oauth_consumer_key = os.environ.get('CONSUMER_KEY', '')
-oauth_consumer_secret = os.environ.get('CONSUMER_SECRET', '')
-oauth_token = os.environ.get('ACCESS_KEY', '')
-oauth_token_secret = os.environ.get('ACCESS_SECRET', '')
+if not local_settings_ready:
+    username = os.environ.get('TWITTER_USERNAME', '')
+    oauth_consumer_key = os.environ.get('CONSUMER_KEY', '')
+    oauth_consumer_secret = os.environ.get('CONSUMER_SECRET', '')
+    oauth_token = os.environ.get('ACCESS_KEY', '')
+    oauth_token_secret = os.environ.get('ACCESS_SECRET', '')
 
 test_tweet_id = '266367358078169089'
 
